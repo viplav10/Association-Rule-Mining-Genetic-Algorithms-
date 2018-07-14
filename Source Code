@@ -1,0 +1,174 @@
+import java.util.*;
+public class Work 
+{
+	public static ArrayList<String> selection(ArrayList<String> trans,double cutOff,double[] freq)
+	{
+		ArrayList<String> selected=new ArrayList<String>();
+		for(int i=0;i<trans.size();i++)
+		{
+			char[] c=trans.get(i).toCharArray();
+			double fitVal=0;
+			int billCard=0;
+			for(int j=0;j<c.length;j++)
+			{
+				if(c[j]=='1')
+				{
+					++billCard;
+					fitVal+=freq[j];
+				}
+			}
+			if(fitVal/billCard>=cutOff)
+			{
+				selected.add(trans.get(i));
+			}
+		}
+		return selected;
+	}
+	
+	public static char[] orderOneCrossover(char[] parent1, char[] parent2)
+	{
+		int l=parent1.length;
+		Random rand =new Random();
+		int pof=rand.nextInt(l);
+		char[] child =new char[l];
+		
+		for(int i=0;i<pof;i++)
+		{
+			child[i]=parent1[i];
+		}
+		
+		for(int j=pof;j<l;j++)
+		{
+			child[j]=parent2[j];
+		}
+		
+		return child;
+		
+	}
+	
+	//input transaction and their cardinality
+	public static void main(String[] args)
+	{
+		Scanner in=new Scanner(System.in);
+		System.out.println("Enter numTran:");
+		
+		int numTran=in.nextInt();
+		ArrayList<String> trans=new ArrayList<String>();
+		
+		for(int i=0;i<numTran;i++)
+		{
+			String str=in.next();
+            str.replace("", "");
+			trans.add(str);
+			
+		}
+		
+		/*int q=6;
+		while(q!=0)
+		{
+			String str=in.next();
+			
+//			str.replace(" ", "");
+				if(str=="-1")
+					break;
+			trans.add(str);
+		}*/
+		
+		System.out.println(trans);   // trans works 
+		
+		int order=trans.get(0).length();
+		
+		double[] freq=new double[order];
+		Arrays.fill(freq,0);
+		for(int l=0;l<order;l++)
+		{
+			System.out.println(freq[l]);
+		}
+		
+		for(int j=0;j<numTran;j++)
+		{
+			String mem=trans.get(j);
+			
+			for(int k=0;k<order;k++)
+			{
+				if(mem.charAt(k)=='1')
+				{
+					freq[k]+=1;
+				}
+			}
+		}
+		
+		for(int x=0;x<order;x++)
+		{
+			freq[x]/=numTran;
+		}
+		
+		for(int l=0;l<order;l++) //freq works
+		{
+			System.out.println("fitness of member-"+l);
+			System.out.println(freq[l]);
+			System.out.println();
+		}
+		
+		//ArrayList<String> selected=selection(trans,0.6, freq);        //selection works too!!!
+		
+        System.out.println("Enter number of gen:");
+		
+		int val1=in.nextInt();
+        System.out.println("Enter fitness value:");
+		
+		double val2=in.nextDouble();
+		for(int gen=0;gen<val1;gen++)
+		{
+			ArrayList<String> CG=selection(trans,val2, freq);
+			ArrayList<String> NG=new ArrayList<String>();
+			
+			if(CG.size()%2==0)
+			{
+				if(CG.size()>=2)
+				{
+
+					for(int n=0;n<=CG.size()-2;n+=2)
+					{
+						char[] newMem=orderOneCrossover(CG.get(n).toCharArray(), CG.get(n+1).toCharArray());
+						NG.add(new String(newMem));
+					}
+				}
+			}
+			
+			else
+			{
+				if(CG.size()>=5)
+				{
+					
+					for(int p=0;p<=CG.size()-5;p+=2)
+					{
+						char[] newMemM=orderOneCrossover(CG.get(p).toCharArray(), CG.get(p+1).toCharArray());
+						NG.add(new String(newMemM));
+					}
+				}
+				
+				char[] newMemMM=orderOneCrossover((CG.get(CG.size()-1)).toCharArray(),orderOneCrossover((CG.get(CG.size()-2)).toCharArray(),(CG.get(CG.size()-3)).toCharArray()));	
+				NG.add(new String(newMemMM));
+				
+			}
+			
+			
+			trans.removeAll(trans);
+			
+			trans.addAll(NG);
+			System.out.println("Gen-"+gen);
+			System.out.println(trans);
+			System.out.println();
+			
+		}
+		
+		System.out.println(trans);
+		System.out.println();
+		
+		
+		
+		
+		
+	}
+}
