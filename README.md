@@ -1,0 +1,2 @@
+# Association-Rule-Mining-Genetic-Algorithms-
+The project aims to mine the billing and retail data of a big supermarket chain by Association rule mining using Genetic Algorithms . Every potential association will be given a relative fitness  which would then be compared with the fitness of the all the other associations. The more powerful association will be selected for reproduction creating the next generation of  associations . 
